@@ -3,7 +3,7 @@ import sqlite3
 
 import requests
 
-from pachicoAgent.config import config
+from pachicoApp.config import config
 
 
 class USDAClient:
@@ -152,7 +152,7 @@ class USDAClient:
 # Simple test block
 if __name__ == "__main__":
     client = USDAClient()
-    # print(client.search_food("Salmon"))
+    # print(client.search_food("Dumplings"))
     """
     FDC ID examples:
     2709223 - Avocado, raw

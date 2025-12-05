@@ -1,7 +1,7 @@
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 
-from pachicoAgent.config import config
+from pachicoApp.config import config
 
 template = """Question: {question}
 Answer: Let's think step by step."""
@@ -9,7 +9,7 @@ Answer: Let's think step by step."""
 prompt = PromptTemplate(template=template, input_variables=["question"])
 
 
-def get_chat_model(model_name="x-ai/grok-4.1-fast:free"):
+def get_chat_model(model_name="amazon/nova-2-lite-v1:free"):
     """
     Returns a chat model instance connected to OpenRouter.
     You can change 'model_name' to any model on OpenRouter.
@@ -24,7 +24,7 @@ def get_chat_model(model_name="x-ai/grok-4.1-fast:free"):
 
 if __name__ == "__main__":
     # Test with a cheap model first
-    llm = get_chat_model("x-ai/grok-4.1-fast:free")
+    llm = get_chat_model()
     llm_chain = prompt | llm
     question = "Hello! Are you ready to track my calories?"
 
