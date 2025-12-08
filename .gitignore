@@ -30,3 +30,6 @@ desktop.ini
 .env
 
 
+# Claude files
+.claude_history/
+CLAUDE.md

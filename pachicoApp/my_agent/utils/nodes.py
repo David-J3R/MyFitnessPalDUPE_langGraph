@@ -39,9 +39,20 @@ async def analyze_request(state: AgentState, config: RunnableConfig):
     last_message = state["messages"][-1]
 
     prompt = ChatPromptTemplate.from_messages(
-        [("system", system_prompt), ("human", "{input}")]
+        [
+            ("system", system_prompt),
+            ("human", "{input}"),
+        ]
     )
+
+    # Declarative Chain
+    chain = prompt | structured_llm
 
     # Invoke the model with the prompt and last message
     # Note: It is not necessary an await since prompt and str
-    decision = structured_llm.invoke(prompt.invoke({"input": last_message.content}))
+    decision = chain.invoke({"input": last_message.content})
+
+    return {
+        "search_query": decision.extracted_food,
+        "nutrition_data": {"decision": decision},
+    }
