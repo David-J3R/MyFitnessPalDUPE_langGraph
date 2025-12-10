@@ -3,7 +3,7 @@ DATABASE OPERATIONS MODULE
 This module contains functions to perform database operations
 """
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from functools import lru_cache
 from typing import Any, Dict, List, Optional
 
@@ -128,6 +128,45 @@ class NutritionRepository:
         )
         result = await database.fetch_one(query)
         return dict(result) if result else None
+
+    async def search_food_history(
+        self, user_id: int, search_term: str, days_back: int = 30
+    ) -> List[Dict]:
+        """Searches logs for a keyword within the last N days."""
+        end_date = datetime.now(timezone.utc)
+        start_date = end_date - timedelta(days=days_back)
+
+        query = (
+            food_logs.select()
+            .where(
+                (food_logs.c.user_id == user_id)
+                & (
+                    food_logs.c.food_description.ilike(f"%{search_term}%")
+                )  # ilike is case-insensitive
+                & (food_logs.c.timestamp >= start_date)
+            )
+            .order_by(food_logs.c.timestamp.desc())
+        )
+
+        results = await database.fetch_all(query)
+        return [dict(row) for row in results]
+
+    async def get_date_range_summary(
+        self, user_id: int, start_date: str, end_date: str
+    ) -> List[Dict]:
+        """Gets daily totals for a range of dates."""
+        query = (
+            daily_totals.select()
+            .where(
+                (daily_totals.c.user_id == user_id)
+                & (daily_totals.c.date >= start_date)
+                & (daily_totals.c.date <= end_date)
+            )
+            .order_by(daily_totals.c.date.asc())
+        )
+
+        results = await database.fetch_all(query)
+        return [dict(row) for row in results]
 
 
 # Factory function

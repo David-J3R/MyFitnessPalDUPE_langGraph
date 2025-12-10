@@ -14,6 +14,8 @@ class BaseConfig(BaseSettings):
 class GlobalConfig(BaseConfig):
     OPENROUTER_API_KEY: str
     USDA_API_KEY: str
+    DATABASE_URL: str = "sqlite:///nutrition_logs.db"
+    DB_FORCE_ROLL_BACK: bool = False
 
 
 class DevConfig(GlobalConfig):
